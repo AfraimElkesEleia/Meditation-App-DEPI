@@ -21,18 +21,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.meditationapp.R
+import com.example.meditationapp.CardModel
 
 @Composable
-fun CardComponent(modifier: Modifier = Modifier) {
+fun CardComponent(modifier: Modifier = Modifier, cardModel: CardModel) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(225.dp).padding(8.dp)
+            .height(225.dp)
+            .padding(8.dp)
     ) {
         Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource(R.drawable.study),
+                painter = painterResource(cardModel.img),
                 contentDescription = null,
                 modifier = modifier
                     .height(200.dp)
@@ -48,29 +49,23 @@ fun CardComponent(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Sleep",
+                    text = cardModel.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 36.sp,
+                    fontSize = 30.sp,
                 )
                 Text(
-                    text = "Guides the mind into a state of relaxation using techniques like body scanning, deep breathing, and calming sounds to reduce stress and prepare the body for rest.",
+                    text = cardModel.description,
                     fontWeight = FontWeight.SemiBold,
                     lineHeight = 12.sp,
                     fontSize = 10.sp,
                 )
                 Text(
                     modifier = modifier.padding(vertical = 4.dp),
-                    text = "Duration: 20–60 minutes",
+                    text = cardModel.duration,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 6.sp,
+                    fontSize = 8.sp,
                 )
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun CardTest() {
-    CardComponent()
 }
