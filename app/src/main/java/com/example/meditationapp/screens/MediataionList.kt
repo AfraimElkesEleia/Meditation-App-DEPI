@@ -3,7 +3,11 @@ package com.example.meditationapp.screens
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.meditationapp.CardModel
+import com.example.meditationapp.Constants
+import com.example.meditationapp.MusicScreen
 import com.example.meditationapp.R
 import com.example.meditationapp.component.CardComponent
 
@@ -28,7 +32,7 @@ var cardsList = listOf(
         title = "Stress",
         img = R.drawable.stress,
         duration = "Duration: 10–20 minutes",
-        description = "  Uses affirmations, visualizations, and calming exercises to reduce cortisol levels and promote emotional well-being."
+        description = "Uses affirmations, visualizations, and calming exercises to reduce cortisol levels and promote emotional well-being."
     ),CardModel(
         title = "Morning",
         img = R.drawable.morning,
@@ -37,13 +41,19 @@ var cardsList = listOf(
     ),
 
 )
-
+val list = listOf(
+    Constants.listOfSleepImages,
+    Constants.listOfStudyImages,
+    Constants.listOfBreathingImages,
+    Constants.listOfStressImages,
+    Constants.listOfMorningImages,
+)
 @Composable
-fun MeditationList(modifier: Modifier = Modifier) {
+fun MeditationList(modifier: Modifier = Modifier,navController: NavController) {
     LazyColumn {
         items(cardsList.size) {
             index->
-            CardComponent(cardModel = cardsList[index])
+            CardComponent(cardModel = cardsList[index], onTap = {navController.navigate(MusicScreen(list = list[index]))})
         }
     }
 }

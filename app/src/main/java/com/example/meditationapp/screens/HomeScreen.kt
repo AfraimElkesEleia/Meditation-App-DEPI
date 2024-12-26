@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.meditationapp.R
 import com.example.meditationapp.TabModel
 
@@ -39,7 +40,7 @@ val tabItems = listOf(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier,navController: NavController) {
     var selectedTabItems by remember {
         mutableIntStateOf(0)
     }
@@ -84,13 +85,8 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .weight(1f)
         ) { index ->
-            MeditationList(modifier = modifier.fillMaxSize())
+            MeditationList(modifier = modifier.fillMaxSize(), navController = navController)
         }
     }
 }
 
-@Preview
-@Composable
-fun TestScreen() {
-    HomeScreen()
-}
