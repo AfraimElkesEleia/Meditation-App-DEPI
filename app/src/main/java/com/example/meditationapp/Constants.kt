@@ -43,4 +43,32 @@ object Constants{
             R.raw.sleep4,
             R.raw.sleep5
         )
+    val listOfStudy = listOf(
+        R.raw.study1,
+        R.raw.study2,
+        R.raw.study3,
+        R.raw.study4,
+        R.raw.study5,
+    )
+    val listOfStress = listOf(
+        R.raw.stress1,
+        R.raw.stress2,
+        R.raw.stress3,
+        R.raw.stress4,
+        R.raw.stress5,
+    )
+    val listOfMorning = listOf(
+        R.raw.morning1,
+        R.raw.morning2,
+        R.raw.morning3,
+        R.raw.morning4,
+        R.raw.morning5,
+    )
+    val listOfBreathing = listOf(
+        R.raw.sleep4,
+        R.raw.sleep2,
+        R.raw.morning2,
+        R.raw.study3,
+        R.raw.morning5
+    )
 }

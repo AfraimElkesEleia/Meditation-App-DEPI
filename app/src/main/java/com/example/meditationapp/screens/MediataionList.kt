@@ -55,6 +55,13 @@ val list = listOf(
     Constants.listOfStressImages,
     Constants.listOfMorningImages,
 )
+val listOfMusics = listOf(
+    Constants.listOfSleepSongs,
+    Constants.listOfStudy,
+    Constants.listOfBreathing,
+    Constants.listOfStress,
+    Constants.listOfMorning
+)
 
 @Composable
 fun MeditationList(modifier: Modifier = Modifier, navController: NavController) {
@@ -75,7 +82,7 @@ fun MeditationList(modifier: Modifier = Modifier, navController: NavController) 
                     navController.navigate(
                         MusicScreen(
                             list = list[index],
-                            listOfSong = Constants.listOfSleepSongs,
+                            listOfSong = listOfMusics[index],
                             title = cardsList[index].title
                         )
                     )
