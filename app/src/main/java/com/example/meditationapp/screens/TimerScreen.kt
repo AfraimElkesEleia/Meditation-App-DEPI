@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -31,29 +32,30 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.meditationapp.ViewModelFactory
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
 fun TimerScreen(
-    modifier: Modifier = Modifier,
-    viewModel: CountDownViewModel,
-    totalTime: Long,
-    handleColor: Color,
-    inactiveColor: Color,
-    activeColor: Color,
+    modifier: Modifier = Modifier.size(200.dp),
+    handleColor: Color = Color(0xFF032744),
+    inactiveColor: Color = Color.DarkGray,
+    minutes:Long,
+    seconds:Long,
+    activeColor: Color = Color(0xFF4682B4 ),
     initialValue: Float = 1f,
     strokeWidth: Dp = 5.dp,
 ) {
+    val viewModel = viewModel<CountDownViewModel>(factory = ViewModelFactory(minutes, seconds))
     var size by remember {
         mutableStateOf(IntSize.Zero)
     }
     var value by remember { //Percentage value of time 0.77=>77%
         mutableFloatStateOf(initialValue)
-    }
-    var currentTime by remember {  //Time in millisecond we currently add
-        mutableLongStateOf(totalTime)
     }
     var isTimerRunnig by remember {
         mutableStateOf(false)
@@ -108,7 +110,7 @@ fun TimerScreen(
                 text = viewModel.timerText.value,//(currentTime / 60000L).toString(),
                 fontSize = 44.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.Black
             )
         }
 
@@ -125,7 +127,6 @@ fun TimerScreen(
                     if (viewModel.isPlaying) {
                         viewModel.stopCountDownTimer()
                         isTimerRunnig = false
-                        currentTime = viewModel.timeLeft
                     } else {
                         viewModel.startCountDownTimer()
                         isTimerRunnig = true
@@ -134,12 +135,12 @@ fun TimerScreen(
                     viewModel.isFinished = false
                     isTimerRunnig = true
                     value = 1f
-                    viewModel.timeLeft = totalTime
+                    viewModel.timeLeft = viewModel.totalTime
                     viewModel.startCountDownTimer()
                 }
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (!viewModel.isPlaying || viewModel.isFinished) Color.Green
+                containerColor = if (!viewModel.isPlaying || viewModel.isFinished) Color(0xFF8b4513)
                 else Color.Red
             )
         ) {
@@ -151,7 +152,7 @@ fun TimerScreen(
                 value = 1f
             },
             colors = ButtonDefaults.buttonColors(
-                Color.Green
+                Color(0xFF8b4513)
             )
         ) {
             Text(text = "Reset")

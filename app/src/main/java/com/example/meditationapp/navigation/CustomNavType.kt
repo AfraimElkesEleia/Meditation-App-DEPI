@@ -1,4 +1,4 @@
-package com.example.meditationapp
+package com.example.meditationapp.navigation
 
 import android.net.Uri
 import android.os.Bundle

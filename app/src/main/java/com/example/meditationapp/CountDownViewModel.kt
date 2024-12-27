@@ -12,10 +12,10 @@ import com.example.timertutorial.TimeFormat.timeFormat
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class CountDownViewModel : ViewModel() {
+class CountDownViewModel (val minutes:Long,val seconds:Long): ViewModel() {
     private var countDownTimer: CountDownTimer? = null
-    private val userInputMinute = TimeUnit.MINUTES.toMillis(1)
-    private val userInputSeconds = TimeUnit.SECONDS.toMillis(0)
+    private val userInputMinute = TimeUnit.MINUTES.toMillis(minutes)
+    private val userInputSeconds = TimeUnit.SECONDS.toMillis(seconds)
      val totalTime = userInputSeconds + userInputMinute
     var timeLeft by mutableLongStateOf(totalTime)
     var timerText = mutableStateOf(timeLeft.timeFormat())

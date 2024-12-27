@@ -23,9 +23,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.meditationapp.CardModel
-import com.example.meditationapp.MusicScreen
 import com.example.meditationapp.R
 
 @Composable

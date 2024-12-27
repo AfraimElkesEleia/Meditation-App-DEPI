@@ -18,7 +18,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.meditationapp.navigation.MainNavGraph
 import com.example.meditationapp.screens.HomeScreen
 import com.example.meditationapp.ui.theme.MeditationAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,13 +1,15 @@
 package com.example.meditationapp.screens
 
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.meditationapp.CardModel
 import com.example.meditationapp.Constants
-import com.example.meditationapp.MusicScreen
+import com.example.meditationapp.navigation.MusicScreen
 import com.example.meditationapp.R
 import com.example.meditationapp.component.CardComponent
 
@@ -51,6 +53,9 @@ val list = listOf(
 @Composable
 fun MeditationList(modifier: Modifier = Modifier,navController: NavController) {
     LazyColumn {
+        item{
+            Text("Choose Your \nMeditation Journey", fontSize = 50.sp, fontWeight = FontWeight.Bold, lineHeight = 50.sp)
+        }
         items(cardsList.size) {
             index->
             CardComponent(cardModel = cardsList[index], onTap = {navController.navigate(MusicScreen(list = list[index]))})
