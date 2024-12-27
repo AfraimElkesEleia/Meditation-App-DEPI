@@ -1,5 +1,7 @@
 package com.example.meditationapp
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +25,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val editor = getSharedPreferences("time", Context.MODE_PRIVATE).edit()
+        editor.putString("minutes","")
+        editor.putString("seconds","")
+        editor.apply()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

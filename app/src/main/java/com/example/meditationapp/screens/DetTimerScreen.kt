@@ -1,6 +1,6 @@
 package com.example.meditationapp.screens
 
-import android.widget.Toast
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +30,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import com.example.meditationapp.R
 import com.example.meditationapp.navigation.TimerScreen
@@ -42,8 +44,7 @@ val textStyle = TextStyle(
 )
 
 @Composable
-fun DetTimerScreen(modifier: Modifier = Modifier, navController: NavController) {
-    val context = LocalContext.current
+fun DetTimerScreen(modifier: Modifier = Modifier, navController: NavController ,index:Int,listOfSongs:List<Int>) {
     var textMinutes by remember { mutableStateOf("") }
     var textSeconds by remember { mutableStateOf("") }
     Column(
@@ -53,8 +54,10 @@ fun DetTimerScreen(modifier: Modifier = Modifier, navController: NavController) 
     ) {
         Text(
             text = "Determine Session Time",
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            lineHeight = 50.sp,
+            fontSize = 40.sp,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Image(painter = painterResource(R.drawable.timer), contentDescription = null)
@@ -72,13 +75,20 @@ fun DetTimerScreen(modifier: Modifier = Modifier, navController: NavController) 
                     )
                 },
                 value = textMinutes,
-                onValueChange = { if (it.length <= 2) textMinutes = it },
+                onValueChange = {
+                    try {
+                        if (it.length <= 2 && it.toLong() <= 60) textMinutes = it
+                    } catch (e: NumberFormatException) {
+                        textMinutes = ""
+                    }
+                },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = textStyle,
                 modifier = Modifier.width(180.dp)
@@ -97,29 +107,31 @@ fun DetTimerScreen(modifier: Modifier = Modifier, navController: NavController) 
                     )
                 },
                 value = textSeconds,
-                onValueChange = { if (it.length <= 2) textSeconds = it },
+                onValueChange = {
+                    try {
+                        if (it.length <= 2 && it.toLong() <= 59) textSeconds = it
+                    } catch (e: NumberFormatException) {
+                        textSeconds = ""
+                    }
+                },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent
                 ),
                 textStyle = textStyle,
                 modifier = Modifier.width(180.dp)
             )
         }
         Button(onClick = {
-            if(textMinutes.isEmpty()||textMinutes.toLong()>60) {
+            if(textMinutes.isEmpty())
                 textMinutes = "00"
+            if(textSeconds.isEmpty())
                 textSeconds = "00"
-                Toast.makeText(context,"You Show Enter Minutes between 00 to 60",Toast.LENGTH_SHORT).show()
-            }
-            else if(textSeconds.isEmpty()||textSeconds.toLong()>59) {
-                textSeconds = "00"
-                Toast.makeText(context,"You Show Enter Seconds between 00 to 60",Toast.LENGTH_SHORT).show()
-            }else
-            navController.navigate(TimerScreen(textMinutes.toLong(), textSeconds.toLong()))
+            navController.navigate(TimerScreen(textMinutes.toLong(), textSeconds.toLong(),index = index, listOfSongs))
         }) {
             Text("Lets Start")
         }

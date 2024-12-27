@@ -1,6 +1,7 @@
 package com.example.meditationapp.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -30,14 +32,14 @@ import com.example.meditationapp.R
 fun CardComponent(modifier: Modifier = Modifier, cardModel: CardModel,onTap:()->Unit) {
     val pacificoFont = FontFamily(Font(R.font.pacifico_regular, FontWeight.SemiBold))
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(225.dp)
             .padding(8.dp).clickable {
                onTap()
             }
     ) {
-        Row(modifier = modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = modifier.fillMaxSize().background(Color(0xFF6C48C5)), verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(cardModel.img),
                 contentDescription = null,

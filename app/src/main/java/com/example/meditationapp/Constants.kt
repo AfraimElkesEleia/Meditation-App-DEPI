@@ -36,4 +36,11 @@ object Constants{
             R.drawable.b4,
             R.drawable.b5,
     )
+        val listOfSleepSongs = listOf(
+            R.raw.sleep1,
+            R.raw.sleep2,
+            R.raw.sleep3,
+            R.raw.sleep4,
+            R.raw.sleep5
+        )
 }

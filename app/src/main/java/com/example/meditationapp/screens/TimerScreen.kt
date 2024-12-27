@@ -2,24 +2,35 @@ package com.example.timertutorial
 
 import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -27,13 +38,15 @@ import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.meditationapp.R
 import com.example.meditationapp.ViewModelFactory
 import kotlin.math.PI
 import kotlin.math.cos
@@ -44,13 +57,25 @@ fun TimerScreen(
     modifier: Modifier = Modifier.size(200.dp),
     handleColor: Color = Color(0xFF032744),
     inactiveColor: Color = Color.DarkGray,
-    minutes:Long,
-    seconds:Long,
-    activeColor: Color = Color(0xFF4682B4 ),
+    minutes: Long,
+    seconds: Long,
+    index: Int,
+    listOfSongs: List<Int>,
+    activeColor: Color = Color(0xFF4682B4),
     initialValue: Float = 1f,
     strokeWidth: Dp = 5.dp,
 ) {
-    val viewModel = viewModel<CountDownViewModel>(factory = ViewModelFactory(minutes, seconds))
+    val context = LocalContext.current
+    var currentIndex by remember { mutableIntStateOf(index) }
+    val viewModel = viewModel<CountDownViewModel>(
+        factory = ViewModelFactory(
+            minutes,
+            seconds,
+            listOfSongs = listOfSongs,
+            context = context,
+            index = currentIndex
+        )
+    )
     var size by remember {
         mutableStateOf(IntSize.Zero)
     }
@@ -60,9 +85,18 @@ fun TimerScreen(
     var isTimerRunnig by remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = viewModel.timeLeft, key2 = isTimerRunnig) {
+    LaunchedEffect(currentIndex) {
+        Log.d("index", index.toString())
+        viewModel.whichMusic(currentIndex)
+    }
+    DisposableEffect(true) {
+        onDispose {
+            viewModel.exitFromScreen()
+        }
+    }
+    LaunchedEffect(key1 = viewModel.timeLeft, key2 = viewModel.isPlaying) {
         Log.d("tag", viewModel.timeLeft.toString())
-        if (!viewModel.isFinished && isTimerRunnig) {
+        if (!viewModel.isFinished && viewModel.isPlaying) {
             //delay(100L)
             //currentTime -= 100L
             value =
@@ -71,7 +105,14 @@ fun TimerScreen(
             value = 1f
         }
     }
-    Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+//    LaunchedEffect(player.currentMediaItemIndex){
+//        currentIndex = player.currentMediaItemIndex
+//    }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(contentAlignment = Alignment.Center, modifier = modifier.onSizeChanged {
             size = it
         }) {
@@ -108,54 +149,71 @@ fun TimerScreen(
             }
             Text(
                 text = viewModel.timerText.value,//(currentTime / 60000L).toString(),
-                fontSize = 44.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+                fontSize = 44.sp, fontWeight = FontWeight.Bold, color = Color.Black
             )
         }
-
-        Button(
-            onClick = {
-//                if (currentTime<=0L){
-//                    currentTime = totalTime
-//                    isTimerRunnig = true
-//                }else{
-//                    isTimerRunnig = !isTimerRunnig
-//
-//                }
-                if (!viewModel.isFinished) {
-                    if (viewModel.isPlaying) {
-                        viewModel.stopCountDownTimer()
-                        isTimerRunnig = false
-                    } else {
-                        viewModel.startCountDownTimer()
-                        isTimerRunnig = true
-                    }
-                } else {
-                    viewModel.isFinished = false
-                    isTimerRunnig = true
-                    value = 1f
-                    viewModel.timeLeft = viewModel.totalTime
-                    viewModel.startCountDownTimer()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(R.drawable.baseline_fast_rewind_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(16.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFF9E6CF)).clickable { viewModel.goToPrev() }
+            )
+            Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+                Button(
+                    onClick = {
+                        if (!viewModel.isFinished) {
+                            if (viewModel.isPlaying) {
+                                viewModel.stopCountDownTimer()
+                                Log.d("play", "Pause")
+                            } else {
+                                viewModel.startCountDownTimer()
+                            }
+                        } else {
+                            viewModel.isFinished = false
+                            isTimerRunnig = true
+                            value = 1f
+                            viewModel.timeLeft = viewModel.totalTime
+                            viewModel.startCountDownTimer()
+                            //player.play()
+                        }
+                    }, colors = ButtonDefaults.buttonColors(
+                        containerColor = if (!viewModel.isPlaying || viewModel.isFinished) Color(
+                            0xFF8b4513
+                        )
+                        else Color.Red
+                    )
+                ) {
+                    Text(text = if (viewModel.isPlaying && !viewModel.isFinished) "Stop" else if (!viewModel.isPlaying && !viewModel.isFinished) "Start" else "Restart")
                 }
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (!viewModel.isPlaying || viewModel.isFinished) Color(0xFF8b4513)
-                else Color.Red
+                Button(
+                    onClick = {
+                        viewModel.resetCountDownTimer()
+                        value = 1f
+
+                    }, colors = ButtonDefaults.buttonColors(
+                        Color(0xFF8b4513)
+                    )
+                ) {
+                    Text(text = "Reset")
+                }
+            }
+            Image(
+                painter = painterResource(R.drawable.baseline_fast_forward_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(16.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFF9E6CF)).clickable { viewModel.goToNext() }
             )
-        ) {
-            Text(text = if (viewModel.isPlaying && !viewModel.isFinished) "Stop" else if (!viewModel.isPlaying && !viewModel.isFinished) "Start" else "Restart")
-        }
-        Button(
-            onClick = {
-                viewModel.resetCountDownTimer()
-                value = 1f
-            },
-            colors = ButtonDefaults.buttonColors(
-                Color(0xFF8b4513)
-            )
-        ) {
-            Text(text = "Reset")
         }
     }
 }

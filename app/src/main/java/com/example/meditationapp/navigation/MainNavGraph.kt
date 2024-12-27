@@ -29,15 +29,33 @@ fun MainNavGraph(navController: NavHostController) {
             )
         ) {
             val args = it.toRoute<MusicScreen>()
-            MusicList(args.list, navController)
+            MusicList(args.list, args.listOfSong, navController, args.title)
         }
-        composable<DetTimerScreen> {
-            DetTimerScreen(navController = navController)
+        composable<DetTimerScreenRoute>(
+            typeMap = mapOf(
+                typeOf<List<Int>>() to CustomNavType.ListType
+            )
+        ) {
+            val args = it.toRoute<DetTimerScreenRoute>()
+            DetTimerScreen(
+                navController = navController,
+                index = args.index,
+                listOfSongs = args.listOfSongs
+            )
         }
-        composable<TimerScreen> {
+        composable<TimerScreen>(
+            typeMap = mapOf(
+                typeOf<List<Int>>() to CustomNavType.ListType
+            )
+        ) {
             val args = it.toRoute<TimerScreen>()
             Box(contentAlignment = Alignment.Center) {
-                TimerScreen(minutes = args.minutes, seconds = args.seconds)
+                TimerScreen(
+                    minutes = args.minutes,
+                    seconds = args.seconds,
+                    index = args.index,
+                    listOfSongs = args.listOfSongs
+                )
             }
         }
     }
