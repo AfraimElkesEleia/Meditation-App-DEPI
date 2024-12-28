@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,7 +67,7 @@ fun TimerScreen(
     strokeWidth: Dp = 5.dp,
 ) {
     val context = LocalContext.current
-    var currentIndex by remember { mutableIntStateOf(index) }
+    var currentIndex by rememberSaveable  { mutableIntStateOf(index) }
     val viewModel = viewModel<CountDownViewModel>(
         factory = ViewModelFactory(
             minutes,

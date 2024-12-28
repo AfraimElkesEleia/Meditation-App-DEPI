@@ -40,7 +40,7 @@ class CountDownViewModel(
     private var countDownTimer: CountDownTimer? = null
     private val userInputMinute = TimeUnit.MINUTES.toMillis(minutes)
     private val userInputSeconds = TimeUnit.SECONDS.toMillis(seconds)
-    private var currentIndex by mutableIntStateOf(index)
+    private var currentIndex by mutableIntStateOf(player.currentMediaItemIndex)
     val totalTime = userInputSeconds + userInputMinute
     var timeLeft by mutableLongStateOf(totalTime)
     var timerText = mutableStateOf(timeLeft.timeFormat())
